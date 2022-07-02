@@ -24,7 +24,8 @@ contract Swap {
     // TODO: Inherit the SwapRouter
     // TODO: pass the SwapRouter address as a constructor
 
-    // Set swap router 
+    // TODO: Get v3 router. This is V2 router
+    // Set swap router
     ISwapRouter public constant swapRouter =
         ISwapRouter(0xE592427A0AEce92De3Edee1F18E0157C05861564);
 
