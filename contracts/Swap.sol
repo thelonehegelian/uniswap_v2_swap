@@ -4,6 +4,7 @@ pragma abicoder v2;
 
 import "@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol";
 import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
+import {IUniswapV2Factory} from "./interfaces/IUniswapV2Factory.sol";
 
 /**
  * 1. Get swapRouter address
@@ -50,9 +51,19 @@ contract Swap {
     function swapExactInputSingle(uint256 amountIn, address token0, address token1)
         external
         returns (uint256 amountOut)
-    {
-
+    {	
+    	// pass the factory address in the constructor
+    	address factory = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
+		address pairAddress = IUniswapV2Factory(factory).getPair(token0, token1);
+    	
+    	// TODO: test if the pool exists    	
+	    require(pairAddress != address(0), 'A liquidity pool for token0 and token1 does not exist. Try a different address pair');
+        
         // msg.sender must approve this contract. What does "approve" mean here?
+
+        // there is also this way to do this, but calling swap method directly is not recommended
+        // unless its a uniSwap flashloan
+        // IUniswapV2Pair(pairAddress).swap ()
 
         // Transfer the specified amount of token0 to this contract.
         TransferHelper.safeTransferFrom(
