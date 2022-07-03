@@ -44,53 +44,63 @@ describe("Swap", function () {
     // deploy the contract
     await swap.deployed();
 
+    const amountTransfer = 5000;
     // amount of ETH to be converted to DAI
-    const amountIn = 1000;
+    const amountIn = 100;
+    
 
+    /// NOTE: probably don't need to do it here as the contract function does that for us
     // deposit wethto the send
-    await weth.connect(owner).deposit({value: amountIn }); 
-    // approve the transaction, this is probably not necessary but lets see
+    await weth.connect(owner).deposit({value: 5000}); 
     await weth.connect(owner).approve(swap.address, amountIn);
 
-    // make the swap, 
-    await swap.swapExactInputSingle(amountIn, WETH9, DAI);
+    
+
+    // Give approval to the UniSwap router 
+    // const uniSwapRouterAddress = "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D";
+    // await dai.connect(owner).approve(swap.address, amountTransfer);
+
+    // // make the swap,
+    // // address _token0, address _token1, uint256 _amountIn, uint256 _amountOutMin, address _to
+    await swap.singleSwap(WETH9, DAI, amountIn,1, owner.address );
 
     // should get dai tokens for the eth spent
+    // console.log("WETH Balance", await weth.balanceOf(owner.address));
     console.log("DAI Balance", await dai.balanceOf(owner.address));
   });
 
-it("Should give error if the pool does not exist", async function() {
-    // get accounts 
-    const [owner, acc1] = await ethers.getSigners();
+// it("Should give error if the pool does not exist", async function() {
+//     // get accounts 
+//     const [owner, acc1] = await ethers.getSigners();
 
-    // get asset contracts 
-    // const dai = await ethers.getContractAt("IERC20", DAI);
-    const weth = await ethers.getContractAt("IWETH", WETH9);
-    const Swap = await ethers.getContractFactory("Swap");
-    const swap = await Swap.deploy();
+//     // get asset contracts 
+//     // const dai = await ethers.getContractAt("IERC20", DAI);
+//     const weth = await ethers.getContractAt("IWETH", WETH9);
+//     const Swap = await ethers.getContractFactory("Swap");
+//     const swap = await Swap.deploy();
 
-    // deploy the contract
-    await swap.deployed();
+//     // deploy the contract
+//     await swap.deployed();
 
-    // amount of ETH to be converted to DAI
-    const amountIn = 1000;
+//     // amount of ETH to be converted to DAI
+//     const amountIn = 1000;
 
-    // deposit weth to the send
-    await weth.connect(owner).deposit({value: amountIn }); 
-    // approve the transaction, this is probably not necessary but lets see
-    await weth.connect(owner).approve(swap.address, amountIn);
+//     // deposit weth to the send
+//     await weth.connect(owner).deposit({value: amountIn }); 
+//     // approve the transaction, this is probably not necessary but lets see
+//     await weth.connect(owner).approve(swap.address, amountIn);
 
-    // make the swap, 
-    await swap.swapExactInputSingle(amountIn, WETH9, WISE);
+//     // make the swap, 
+//     await swap.swapExactInputSingle(amountIn, WETH9, WISE);
 
-    // This method of checking balance works too, though for consistencies sake might keep the above method
-    const dai = new ethers.Contract(DAI, erc20, owner);
-    console.log(await dai.balanceOf(owner.address));
+//     // This method of checking balance works too, though for consistencies sake might keep the above method
+//     const dai = new ethers.Contract(DAI, erc20, owner);
+//     console.log(await dai.balanceOf(owner.address));
 
-    // This should give an error. Successful!
-    // TODO: handle the error
+//     // This should give an error. Successful!
+//     // TODO: handle the error
 
-  })
+//   })
 
 
 });

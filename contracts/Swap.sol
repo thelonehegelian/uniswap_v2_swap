@@ -1,10 +1,14 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
-pragma solidity =0.7.6;
+pragma solidity 0.7.6;
 pragma abicoder v2;
 
-import "@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol";
-import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
 import {IUniswapV2Factory} from "./interfaces/IUniswapV2Factory.sol";
+import "./interfaces/IUniswapV2Router02.sol";
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+
+// TODO: install v2 periphery
+//
+//
 
 /**
  * 1. Get swapRouter address
@@ -14,86 +18,43 @@ import {IUniswapV2Factory} from "./interfaces/IUniswapV2Factory.sol";
  */
 
 contract Swap {
-    // For the scope of these swap examples,
-    // we will detail the design considerations when using
-    // `exactInput`, `exactInputSingle`, `exactOutput`, and  `exactOutputSingle`.
-
-    // It should be noted that for the sake of these examples, we purposefully pass in the swap router instead of inherit the swap router for simplicity.
-    // More advanced example contracts will detail how to inherit the swap router safely.
+    address private constant DAI = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
+    address private constant WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
+    // TODO: Add swaprouter address to the constructor
+    // constructor (address _swapRouterAddress) {}
 
     // TODO: Inherit the SwapRouter
     // TODO: pass the SwapRouter address as a constructor
 
     // TODO: Get v3 router. This is V2 router
     // Set swap router
-    ISwapRouter public constant swapRouter =
-        ISwapRouter(0xE592427A0AEce92De3Edee1F18E0157C05861564);
+    address private constant UNISWAP_V2_ROUTER =
+        0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
 
     // For this example, we will set the pool fee to 0.3%.
     uint24 public constant poolFee = 3000;
 
-    /// @notice swapExactInputSingle swaps a fixed amount of token0 for a maximum possible amount of token1
+    function singleSwap(
+        address _token0,
+        address _token1,
+        uint256 _amountIn,
+        uint256 _amountOutMin,
+        address _to
+    ) external {
+        IERC20(_token0).transferFrom(msg.sender, address(this), _amountIn);
+        IERC20(_token0).approve(UNISWAP_V2_ROUTER, _amountIn);
 
-    /// @dev The calling address must approve this contract to spend at least `amountIn` worth of its DAI for this function to succeed.
+        address[] memory path = new address[](2);
+        path[0] = address(_token0);
+        path[1] = address(_token1);
+        // path[2] = _token1;
 
-    /// @param amountIn The exact amount of DAI that will be swapped for WETH9.
-    /// @param token0   Address of the token to be provided
-    /// @param token1   Address of the token to be received
-
-    /// @return amountOut The amount of token0 received.
-
-    // token0 is being swapped for token1
-    // TODO: is using an array here better?
-    // for testing, addresses passed would be 
-        // token0 = WETH9 
-        // token1 = DAI
-
-    // After testing succeeds verify pools for the pair passed and then move on  
-    function swapExactInputSingle(uint256 amountIn, address token0, address token1)
-        external
-        returns (uint256 amountOut)
-    {	
-    	// pass the factory address in the constructor
-    	address factory = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
-		address pairAddress = IUniswapV2Factory(factory).getPair(token0, token1);
-    	
-    	// TODO: test if the pool exists    	
-	    require(pairAddress != address(0), 'A liquidity pool for token0 and token1 does not exist. Try a different address pair');
-        
-        // msg.sender must approve this contract. What does "approve" mean here?
-
-        // there is also this way to do this, but calling swap method directly is not recommended
-        // unless its a uniSwap flashloan
-        // IUniswapV2Pair(pairAddress).swap ()
-
-        // Transfer the specified amount of token0 to this contract.
-        TransferHelper.safeTransferFrom(
-            token0, 
-            msg.sender,
-            address(this),
-            amountIn
+        IUniswapV2Router02(UNISWAP_V2_ROUTER).swapExactTokensForTokens(
+            _amountIn,
+            _amountOutMin,
+            path,
+            _to,
+            block.timestamp
         );
-
-        // Approve the router to spend token0.
-        TransferHelper.safeApprove(token0, address(swapRouter), amountIn);
-
-        // Naively set amountOutMinimum to 0. In production, use an oracle or other data source to choose a safer value for amountOutMinimum.
-        // We also set the sqrtPriceLimitx96 to be 0 to ensure we swap our exact input amount.
-        ISwapRouter.ExactInputSingleParams memory params = ISwapRouter
-            .ExactInputSingleParams({
-                tokenIn: token0,
-                tokenOut: token1,
-                fee: poolFee,
-                recipient: msg.sender,
-                deadline: block.timestamp,
-                amountIn: amountIn,
-                amountOutMinimum: 0,
-                sqrtPriceLimitX96: 0
-            });
-
-        // The call to `exactInputSingle` executes the swap.
-        amountOut = swapRouter.exactInputSingle(params);
     }
-
-
 }
