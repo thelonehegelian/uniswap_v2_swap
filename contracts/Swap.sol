@@ -47,7 +47,6 @@ contract Swap {
         address[] memory path = new address[](2);
         path[0] = address(_token0);
         path[1] = address(_token1);
-        // path[2] = _token1;
 
         IUniswapV2Router02(UNISWAP_V2_ROUTER).swapExactTokensForTokens(
             _amountIn,
