@@ -1,4 +1,5 @@
 // from : https://github.com/Synthetixio/synthetix/blob/v2.74.1/contracts/interfaces/IWETH.sol
+// SPDX-License-Identifier: GPL-2.0-or-later
 pragma solidity ^0.8.0;
 
 // WETH9 inherits from ERC20 token contract

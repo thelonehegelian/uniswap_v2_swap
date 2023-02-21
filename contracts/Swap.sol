@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
-pragma solidity 0.7.6;
-pragma abicoder v2;
+pragma solidity ^0.8.0;
 
 import {IUniswapV2Factory, IUniswapV2Router02} from "./interfaces/Interfaces.sol";
 import "./interfaces/IERC20.sol";

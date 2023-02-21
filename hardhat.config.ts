@@ -6,7 +6,7 @@ import "@nomiclabs/hardhat-waffle";
 import chai from "chai";
 import { solidity } from "ethereum-waffle";
 
-chai.use(solidity)
+chai.use(solidity);
 
 // import "@typechain/hardhat";
 // import "hardhat-gas-reporter";
@@ -14,17 +14,15 @@ chai.use(solidity)
 
 dotenv.config();
 
-
 module.exports = {
-  solidity: "0.7.6",
+  solidity: "0.8.0",
   networks: {
-      hardhat: {
-        chainId: 31337,
-        forking: {
-          
-            url: `https://eth-mainnet.g.alchemy.com/v2/${process.env.API_KEY}`,  
-            blockNumber: 14390000        
-        }
-      }
-    }
+    hardhat: {
+      chainId: 31337,
+      forking: {
+        url: `https://eth-mainnet.g.alchemy.com/v2/${process.env.API_KEY}`,
+        blockNumber: 14390000,
+      },
+    },
+  },
 };
