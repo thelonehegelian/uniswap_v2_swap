@@ -1,6 +1,5 @@
-const { expect } = require("chai");
-const { ethers } = require("hardhat");
-const erc20 = require("../artifacts/contracts/interfaces/IERC20.sol/IERC20.json");
+import { expect } from "chai";
+import { ethers } from "hardhat";
 
 // interfaces for DAI and USDC is included in the Uniswap package installed
 const DAI = "0x6B175474E89094C44Da98b954EedeAC495271d0F";
