@@ -27,7 +27,7 @@ describe("Swap", function () {
 
   it("Should make a single hop swap between two tokens, WETH9 and DAI", async function () {
     // get accounts
-    const [owner, acc1] = await ethers.getSigners();
+    const [owner] = await ethers.getSigners();
 
     // get dai contract
     const dai = await ethers.getContractAt("IERC20", DAI);
