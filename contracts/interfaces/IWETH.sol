@@ -1,5 +1,5 @@
 // from : https://github.com/Synthetixio/synthetix/blob/v2.74.1/contracts/interfaces/IWETH.sol
-pragma solidity =0.7.6;
+pragma solidity ^0.8.0;
 
 // WETH9 inherits from ERC20 token contract
 

@@ -2,13 +2,8 @@
 pragma solidity 0.7.6;
 pragma abicoder v2;
 
-import {IUniswapV2Factory} from "./interfaces/IUniswapV2Factory.sol";
-import "./interfaces/IUniswapV2Router02.sol";
-import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-
-// TODO: install v2 periphery
-//
-//
+import {IUniswapV2Factory, IUniswapV2Router02} from "./interfaces/Interfaces.sol";
+import "./interfaces/IERC20.sol";
 
 /**
  * 1. Get swapRouter address
@@ -31,7 +26,7 @@ contract Swap {
     address private constant UNISWAP_V2_ROUTER =
         0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
 
-    // For this example, we will set the pool fee to 0.3%.
+    // set the pool fee to 0.3%.
     uint24 public constant poolFee = 3000;
 
     function singleSwap(
